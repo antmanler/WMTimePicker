@@ -1,0 +1,6 @@
+
+#ignore mac specified files
+.DS_Store
+*.xcuserstate
+*.xcuserdatad
+Vime.xcodeproj/xcuserdata
