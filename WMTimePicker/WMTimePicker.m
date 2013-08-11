@@ -29,6 +29,7 @@
 @end
 
 @implementation WMTimePicker
+@synthesize date=_date;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -69,11 +70,18 @@
 }
 
 - (void) update{
+    NSDate *oldDate = self.date;
     [self removeContent];
     [self addContent];
     [self updateDelegateSubviews];
     [self fillWithCalendar];
     [self reloadData];
+    self.date = oldDate;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self update];
 }
 
 - (NSInteger) selectedRowInComponent:(NSInteger)component{
@@ -464,13 +472,20 @@
 
 - (void)setDate:(NSDate *)theDate animated:(BOOL)animated{
     
+    if (!theDate) return;
+    if (!self.tables) {
+        // remeber the date temporarily
+        _date = theDate;
+        return;
+    }
+    
     self.calendar.timeZone = [NSTimeZone localTimeZone];
     NSDateComponents *dateComponents = [self.calendar components:(NSHourCalendarUnit  | NSMinuteCalendarUnit) fromDate:theDate];
     NSInteger hour = [dateComponents hour];
     NSInteger minute = [dateComponents minute];
     
-    [self selectRow:hour + 24 inComponent:0 animated:YES];
-    [self selectRow:minute + 60 inComponent:1 animated:YES];
+    [self selectRow:hour + 24 inComponent:0 animated:animated];
+    [self selectRow:minute + 60 inComponent:1 animated:animated];
 }
 
 - (void)setDate:(NSDate *)theDate {
@@ -478,6 +493,9 @@
 }
 
 - (NSDate*)date{
+    if (!self.tables) {
+        return _date;
+    }
     NSDateComponents *components = [self.calendar components: NSUIntegerMax fromDate:[NSDate date]];
     [components setHour: ([self selectedRowInComponent:0]%24)];
     [components setMinute: [self selectedRowInComponent:1]%60];
