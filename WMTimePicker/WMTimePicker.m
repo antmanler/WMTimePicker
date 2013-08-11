@@ -34,14 +34,26 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
-        self.clipsToBounds = YES;
-        
-        self.fontColor = [UIColor blackColor];
-        self.calendar  = [NSCalendar currentCalendar];
-        self.font      = [UIFont systemFontOfSize:33];
+        [self configure];
     }
     return self;
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self configure];
+    }
+    return self;
+}
+
+- (void)configure {
+    self.backgroundColor = [UIColor whiteColor];
+    self.clipsToBounds = YES;
+    
+    self.fontColor = [UIColor blackColor];
+    self.calendar  = [NSCalendar currentCalendar];
+    self.font      = [UIFont systemFontOfSize:33];
 }
 
 - (void) dealloc{
